@@ -2,32 +2,82 @@
 #Do wtf ever you want with it...
 import os
 import subprocess
+import re
 
-#imageFile must be in current directory, feel free to change this. 
-imageFile = 'gif1.gif'
+#user changable variables
+scriptName = '17.txt'
+imageFile = 'gif4.gif'
+newTextFileName = 'textDocument.txt'
+#for os 0 = *nix based os 1=windows based os for install.
+operatingSystem = 0
+#for compression, 0 = no compression,
+#1 = only compression, 
+#2 = compression and no compression side by side
+compressionSetting = 0
+
+#change settings for os
+if(operatingSystem == 0):
+	gifShuffleRun = 'gifshuffle'
+else:
+	gifShuffleRun = 'gifshuffle.exe'
+print gifShuffleRun
+
+wordFile = open(scriptName, 'r')
+
+#open file with giant word list or use wordlist to be your selection of words open('oldfile.txt', 'r') for reference
+wordList = wordFile.read()
+wordList = re.sub(r'\W+', ' ', wordList)
+wordFile = open(scriptName, 'w')
+wordFile.write(wordList)
+wordFile.close()
 #wordlist is the script separated by spaces. 
-wordList = "Velvet Sullivans lost the reservations for our office party, because the person who took the reservation had been fired. There were 200 of us, the entire department. Chief started yelling but the hostess held firm and explained that the whole bar and grill was booked for a banks St. Patrick's Day party. Back on the bus Chief yelled. Back on the bus and in the cars I was seated next to Henry (Or Henri) in the first row. Chief was perched next to the driver, guiding him at sub-5 miles per hour speeds up La cienaga in a brute-force search for any establishment with sufficient capacity.The bus was the bloated payload of the convoy, surrounded by a swarm of employee cars that blocked lanes while passengers deboarded and sprinted through traffic to check the wait time at every possible restaurant for a party of 200. Angry commuters began to hold down horns in a continuous atonal scream. Like a battleship squeezing through a canal, the bus and it's attended motorcadeplugged the street from edge to edge, pushing northward relentlessly at 1 mile per hour to avoid any number of fines we might be subject to if we halted even for a second.In a desperate bid to avoid our vile parade, trailing cars spilled into oncoming lanes, attempting illegal u-turns and side-swiping south-bound traffic, leaving an impassible battlefield of accidents and insurance disputes in our wake. Our fastest scout cars fanned out into side streets, checking with two or three restaurants. Then accelerating to rejoin the convoy at the next intersection.At some point in the melee Chief had locked the driver in the bus's bathroom, and taken the wheel himself. Debra, one of the scouts, pulled up alongside us and shouted that the Mexican place two blocks up had a ballroom with 150 person capacity. It wasn't perfect, but it would have to do. Chief floored it to edge out a rival bus of German tourists and shot onto the winding entrance ramp of a parking structure.Still in hot pursuit, willfully blind to signage-bar in trucks and busses, he held his speed and began to recite the regulators code in clenched teeth.we heard the scream of tearing metal as both sides of the bus scraped against the ramps curved walls, emitting a shower of orange sparks until it was physically impossible for the bus to advance. With the door wedged shut against the wall and the roofs emergency exit a foot below the ceiling, we had no choice but to clamber out through half-lowered windows. The trailing throng of employee cars was suffocatingly close behind and unable to reverse, forcing drivers to abandon their vehicles on the ramp. By the time we made it to the restaurant the German tourists had claimed the ballroom. We ordered 400 tacos to go, and ate them mournfully.Something is going to happen in 18 days."
+
 responseArray = []
  
 wordListArray = wordList.split(" ");
 wordListArrayLength = len(wordListArray)
 i = 0
 while(i < wordListArrayLength):
-	#for windows change gifshuffle to gifshuffle.exe, for unix leave as gifshuffle
-	stringResponse = subprocess.check_output(["gifshuffle", "-C", "-p", wordListArray[i], imageFile])
-	print(stringResponse)
-	if(stringResponse != "Warning: residual of 4 bits not uncompressed"):
-		responseArray.append(stringResponse)
-	i += 1
+	#responses from terminal , stringResponse with -C adds compression, without does not. tries standard capitalization, all caps, all lower and how it was presented in file. 
+	#normal case
 
-print "\n"
-print "\n"
+	responseArray.append("\n" + str(i) + ":" + wordListArray[i] + ":" + "\n")
+	if(compressionSetting != 1):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i], imageFile])
+		responseArray.append(stringResponse)
+	if(compressionSetting >0):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i], imageFile])
+		responseArray.append(stringResponse)
+	#uppercase
+	if(compressionSetting != 1):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].upper(), imageFile])
+		responseArray.append(stringResponse)
+	if(compressionSetting> 0):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].upper(), imageFile])
+		responseArray.append(stringResponse)
+	#lowercase
+	if(compressionSetting != 1):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].lower(), imageFile])
+		responseArray.append(stringResponse)
+	if(compressionSetting >0):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].lower(), imageFile])
+		responseArray.append(stringResponse)
+	#capitalize first
+	if(compressionSetting != 1):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].capitalize(), imageFile])
+		responseArray.append(stringResponse)
+	if(compressionSetting >0):
+		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].capitalize(), imageFile])
+		responseArray.append(stringResponse)
+
+
+	i += 1
+#add all array items to new string
+#so that new file may have all new words
 newString = ''
 for item in responseArray:
 	newString += item + "\n"
 
-print newString
-print len(newString)
-outFile = open('textDocument.txt', 'w')
+outFile = open(newTextFileName, 'w')
 outFile.write(newString)
 outFile.close()
