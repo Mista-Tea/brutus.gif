@@ -4,11 +4,11 @@ import os
 import subprocess
 import re
 
-#user changable variables
+#user changable variables scriptName is user defined dictionary, image file is user defined image, new text file is name of output
 scriptName = 'userDictionary.txt'
 imageFile = 'usergif.gif'
 newTextFileName = 'crackResults.txt'
-#for os 0 = *nix based os 1=windows based os for install.
+
 operatingSystem = os.name
 #for compression, 0 = no compression,
 #1 = only compression, 
@@ -24,14 +24,12 @@ print gifShuffleRun
 
 wordFile = open(scriptName, 'r')
 
-#open file with giant word list or use wordlist to be your selection of words open('oldfile.txt', 'r') for reference
+#opens file, uses regex to separate words from enters and special characters
 wordList = wordFile.read()
 wordList = re.sub(r'\W+', ' ', wordList)
 wordFile = open(scriptName, 'w')
 wordFile.write(wordList)
 wordFile.close()
-#wordlist is the script separated by spaces. 
-
 responseArray = []
  
 wordListArray = wordList.split(" ");
@@ -39,8 +37,6 @@ wordListArrayLength = len(wordListArray)
 i = 0
 while(i < wordListArrayLength):
 	#responses from terminal , stringResponse with -C adds compression, without does not. tries standard capitalization, all caps, all lower and how it was presented in file. 
-	#normal case
-
 	responseArray.append("\n" + str(i) + ":" + wordListArray[i] + ":" + "\n")
 	if(compressionSetting != 1):
 		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i], imageFile])
@@ -55,8 +51,6 @@ while(i < wordListArrayLength):
 		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].capitalize(), imageFile])
 		responseArray.append(stringResponse)
 
-
-
 	if(compressionSetting >0):
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i], imageFile])
 		responseArray.append(stringResponse)
@@ -69,7 +63,6 @@ while(i < wordListArrayLength):
 
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].capitalize(), imageFile])
 		responseArray.append(stringResponse)
-
 
 	i += 1
 #add all array items to new string
