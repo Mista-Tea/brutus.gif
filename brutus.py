@@ -5,18 +5,18 @@ import subprocess
 import re
 
 #user changable variables
-scriptName = '17.txt'
-imageFile = 'gif4.gif'
-newTextFileName = 'textDocument.txt'
+scriptName = 'userDictionary.txt'
+imageFile = 'usergif.gif'
+newTextFileName = 'crackResults.txt'
 #for os 0 = *nix based os 1=windows based os for install.
-operatingSystem = 0
+operatingSystem = os.name
 #for compression, 0 = no compression,
 #1 = only compression, 
 #2 = compression and no compression side by side
 compressionSetting = 0
 
 #change settings for os
-if(operatingSystem == 0):
+if(operatingSystem == 'posix'):
 	gifShuffleRun = 'gifshuffle'
 else:
 	gifShuffleRun = 'gifshuffle.exe'
@@ -45,28 +45,28 @@ while(i < wordListArrayLength):
 	if(compressionSetting != 1):
 		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i], imageFile])
 		responseArray.append(stringResponse)
+
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].upper(), imageFile])
+		responseArray.append(stringResponse)
+
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].lower(), imageFile])
+		responseArray.append(stringResponse)
+
+		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].capitalize(), imageFile])
+		responseArray.append(stringResponse)
+
+
+
 	if(compressionSetting >0):
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i], imageFile])
 		responseArray.append(stringResponse)
-	#uppercase
-	if(compressionSetting != 1):
-		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].upper(), imageFile])
-		responseArray.append(stringResponse)
-	if(compressionSetting> 0):
+
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].upper(), imageFile])
 		responseArray.append(stringResponse)
-	#lowercase
-	if(compressionSetting != 1):
-		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].lower(), imageFile])
-		responseArray.append(stringResponse)
-	if(compressionSetting >0):
+
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].lower(), imageFile])
 		responseArray.append(stringResponse)
-	#capitalize first
-	if(compressionSetting != 1):
-		stringResponse = subprocess.check_output([gifShuffleRun, "-p", wordListArray[i].capitalize(), imageFile])
-		responseArray.append(stringResponse)
-	if(compressionSetting >0):
+
 		stringResponse = subprocess.check_output([gifShuffleRun, "-C", "-p", wordListArray[i].capitalize(), imageFile])
 		responseArray.append(stringResponse)
 
